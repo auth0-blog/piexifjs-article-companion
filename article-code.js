@@ -14,7 +14,7 @@ const piexif = require('piexifjs');
 const getBase64DataFromJpegFile = filename => fs.readFileSync(filename).toString('binary');
 const getExifFromJpegFile = filename => piexif.load(getBase64DataFromJpegFile(filename));
 
-// Get the EXIF data for the palm tree photos
+// Get the Exif data for the palm tree photos
 // (Assumes that the photos “palm tree 1.jpg” and “palm tree 2.jpg”
 // are in a directory named “images”)
 const palm1Exif = getExifFromJpegFile("./images/palm tree 1.jpg");
@@ -34,7 +34,7 @@ console.log(palm2Exif);
 function debugExif(exif) {
     for (const ifd in exif) {
         if (ifd == 'thumbnail') {
-            const thumbnailData = exif[ifd] === null ? "null" : exif[ifd]
+            const thumbnailData = exif[ifd] === null ? "null" : exif[ifd];
             console.log(`- thumbnail: ${thumbnailData}`);
         } else {
             console.log(`- ${ifd}`);
@@ -70,14 +70,14 @@ for (const [index, exif] of palmExifs.entries()) {
 
 // Show the dates and times when the palm tree photos were taken
 for (const [index, exif] of palmExifs.entries()) {    
-    const dateTime = exif['0th'][piexif.ImageIFD.DateTime]
-    const dateTimeOriginal = exif['Exif'][piexif.ExifIFD.DateTimeOriginal]
-    const subsecTimeOriginal = exif['Exif'][piexif.ExifIFD.SubSecTimeOriginal]
+    const dateTime = exif['0th'][piexif.ImageIFD.DateTime];
+    const dateTimeOriginal = exif['Exif'][piexif.ExifIFD.DateTimeOriginal];
+    const subsecTimeOriginal = exif['Exif'][piexif.ExifIFD.SubSecTimeOriginal];
     
-    console.log(`Date/time taken - Image ${index}`)
-    console.log("-------------------------")
-    console.log(`DateTime: ${dateTime}`)
-    console.log(`DateTimeOriginal: ${dateTimeOriginal}.${subsecTimeOriginal}\n`)
+    console.log(`Date/time taken - Image ${index}`);
+    console.log("-------------------------");
+    console.log(`DateTime: ${dateTime}`);
+    console.log(`DateTimeOriginal: ${dateTimeOriginal}.${subsecTimeOriginal}\n`);
 }
 
 
@@ -116,8 +116,8 @@ function drawMapForLocation(latitude, latitudeRef, longitude, longitudeRef) {
     const url = `https://www.google.com/maps?q=${decimalLatitude},${decimalLongitude}`;
     open(url);
     
-    latitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(latitude);
-    longitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(longitude);
+    const latitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(latitude);
+    const longitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(longitude);
     console.log("Original coordinates");
     console.log("--------------------");
     console.log(`Latitude: ${latitudeDegrees} ${latitudeRef}`);
@@ -126,11 +126,11 @@ function drawMapForLocation(latitude, latitudeRef, longitude, longitudeRef) {
 
 // Open maps showing where the palm tree photos were taken
 for (const [index, exif] of palmExifs.entries()) {
-    const latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude]
-    const latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef]
-    const longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude]
-    const longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef]
-    drawMapForLocation(latitude, latitudeRef, longitude, longitudeRef)
+    const latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
+    const latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
+    const longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
+    const longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
+    drawMapForLocation(latitude, latitudeRef, longitude, longitudeRef);
 }
 
 
@@ -147,10 +147,10 @@ function rationalToDecimal(rationalValue) {
 // return a string expressing these values in terms of 
 // meters above or below sea level
 function formatAltitude(altitude, altitudeRef) {
-    altitudeRefText = "(above or below sea level not specified)";
+    let altitudeRefText = "(above or below sea level not specified)";
     if (altitudeRef == 0) {
         altitudeRefText = "above sea level";
-    } else if (altitude_ref == 1) {
+    } else if (altitudeRef == 1) {
         altitudeRefText = "below sea level";
     }
     return `${altitude} meters ${altitudeRefText}`;
@@ -160,7 +160,7 @@ function formatAltitude(altitude, altitudeRef) {
 // Load the altitude photos
 // (Assumes that the photos “altitude 1.jpg” and “altitude 2.jpg”
 // are in a directory named “images”)
-altitudeExifs = [];
+let altitudeExifs = [];
 for (let index = 1; index <= 2; index++) {
     const filename = `./images/altitude ${index}.jpg`;
     altitudeExifs.push(getExifFromJpegFile(filename));
@@ -225,7 +225,7 @@ function formatDirectionRef(directionRef) {
 // (Assumes that the photos “lake 1.jpg”, “lake 2.jpg”,
 // “lake 3.jpg”, and “lake 4.jpg” are in a directory 
 // named “images”)
-lakeExifs = [];
+let lakeExifs = [];
 for (let index = 1; index <= 4; index++) {
     const filename = `./images/lake ${index}.jpg`;
     lakeExifs.push(getExifFromJpegFile(filename));
@@ -252,7 +252,7 @@ for (const [index, exif] of lakeExifs.entries()) {
 // return a string expressing if the spped is expressed
 // in kilometers per hour, miles per hour, or knots
 function formatSpeedRef(speedRef) {
-    speedRefText = "(speed units not specified)";
+    let speedRefText = "(speed units not specified)";
     
     if (speedRef == 'K') {
         speedRefText = "km/h";
@@ -265,18 +265,16 @@ function formatSpeedRef(speedRef) {
     return speedRefText;
 }
 
-// Load lake photos
+// Load speed photos
 // (Assumes that the photos “speed 1.jpg”, “speed 2.jpg”,
 // and “speed 3.jpg” are in a directory 
 // named “images”)
-speedExifs = []
+let speedExifs = [];
 for (let index = 1; index <= 3; index++) {
     const filename = `./images/speed ${index}.jpg`;
     speedExifs.push(getExifFromJpegFile(filename));
 }
 
-// Show the speeds at which the camera was moving 
-// when the photos were taken 
 for (const [index, exif] of speedExifs.entries()) {
     const speedRational = exif['GPS'][piexif.GPSIFD.GPSSpeed];
     const speedDecimal = rationalToDecimal(speedRational);
@@ -294,13 +292,13 @@ for (const [index, exif] of speedExifs.entries()) {
 // Load hotel photo
 // (Assumes that the photo “hotel original.jpg”
 // is in a directory named “images”)
-hotelExif = getExifFromJpegFile('./images/hotel original.jpg');
+const hotelExif = getExifFromJpegFile('./images/hotel original.jpg');
 
 // Show the hotel’s location on a map
-latitudeDMS = hotelExif['GPS'][piexif.GPSIFD.GPSLatitude];
-latitudeRef = hotelExif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
-longitudeDMS = hotelExif['GPS'][piexif.GPSIFD.GPSLongitude];
-longitudeRef = hotelExif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
+const latitudeDMS = hotelExif['GPS'][piexif.GPSIFD.GPSLatitude];
+const latitudeRef = hotelExif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
+const longitudeDMS = hotelExif['GPS'][piexif.GPSIFD.GPSLongitude];
+const longitudeRef = hotelExif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
 drawMapForLocation(latitudeDMS, latitudeRef, longitudeDMS, longitudeRef);
 
 // Copy the original photo’s picture and Exif data
